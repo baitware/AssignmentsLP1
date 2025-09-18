@@ -35,10 +35,10 @@ ddt_dLdq_dot = jacobian(dLdq_dot, [q; q_dot]) * [q_dot; q_dotdot];
 
 E = simplify(ddt_dLdq_dot - dLdq - Q); % = 0
     
-M_1a = simplify(jacobian(E, q_dotdot))
-b_1a = simplify(-(E-M_1a*q_dotdot))
+M_1a = simplify(jacobian(E, q_dotdot));
+b_1a = simplify(-(E-M_1a*q_dotdot));
 
-LHS_1a = M_1a * q_dotdot
+LHS_1a = M_1a * q_dotdot;
 
 %% Part 1b)
 
@@ -75,14 +75,14 @@ ddq_dCdq = jacobian(dCdq * q_dot, q);
 
 E = simplify(ddt_gradLdq_dot - gradLdq - Q);
 
-M_1b = simplify(jacobian(E, q_dotdot))
-b_1b = simplify(-(E-M_1b*q_dotdot))
+M_1b = simplify(jacobian(E, q_dotdot));
+b_1b = simplify(-(E-M_1b*q_dotdot));
 
 C_dotdot = dCdq * q_dotdot + ddq_dCdq * q_dot;
 
 %% Part 2a)
 
-a = jacobian(C, q).'
+a = jacobian(C, q).';
 
 cTop = -simplify(E - M_1b * q_dotdot - jacobian(E, Z)*Z);
 
@@ -92,16 +92,16 @@ LHS_mat = [M_1b a; a.' 0];
 
 LHS = LHS_mat*[q_dotdot; Z];
 
-c = [cTop; cBot]
+c = [cTop; cBot];
 
 %% Part 2b)
 
 
-x = LHS_mat \ c
+x = LHS_mat \ c;
 
 LHS_mat_inv = inv(LHS_mat);
 
-RHS = simplify(LHS_mat_inv * c)
+RHS = simplify(LHS_mat_inv * c);
 
 %% === 2b Simulation & Plot =================================================
 % Export numeric functions
@@ -119,7 +119,7 @@ m1v = 1.5; m2v = 1.0; Lv = 1.2; gv = 9.81;
 % Control: gentle lateral motion, thrust balances weight
 ufun = @(t,q,v) [ 3*sin(0.6*t);        % ux(t)
                   2*cos(0.4*t);        % uy(t)
-                  (m1v+m2v)*gv ];      % uz ~ hover
+                  (m1v+m2v)*gv + cos(0.8*t) ];      % uz ~ hover
 
 % Consistent initial conditions (C(q0)=0, a(q0)^T v0 = 0):
 p1_0 = [0; 0; 1.5];
@@ -155,14 +155,14 @@ plot3(P1(end,1),P1(end,2),P1(end,3),'s','MarkerFaceColor','k','MarkerEdgeColor',
 plot3(P2(end,1),P2(end,2),P2(end,3),'s','MarkerFaceColor','k','MarkerEdgeColor','k');
 
 xlabel('x [m]'); ylabel('y [m]'); zlabel('z [m]');
-title('Helicopter (m_1) and Payload (m_2) Trajectories — Constrained KKT Model (2b)');
+title('Helicopter (m_1) and Payload (m_2) Trajectories');
 legend({'helicopter m_1','payload m_2','cable snapshots'}, 'Location','best');
 axis equal; view(35,20);
 
 % Optional: top view and save
-% figure('Color','w'); plot(P1(:,1),P1(:,2),'LineWidth',2); hold on;
-% plot(P2(:,1),P2(:,2),'--','LineWidth',2); axis equal; grid on;
-% xlabel('x'); ylabel('y'); title('Top view (x–y)'); legend('m_1','m_2');
+figure('Color','w'); plot(P1(:,1),P1(:,2),'LineWidth',2); hold on;
+plot(P2(:,1),P2(:,2),'--','LineWidth',2); axis equal; grid on;
+xlabel('x'); ylabel('y'); title('Top view (x–y)'); legend('m_1','m_2');
 % saveas(gcf,'kkt_helicopter_payload.png');
 
 %% ---------- local function ----------
